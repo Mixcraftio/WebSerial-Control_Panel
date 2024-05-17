@@ -1,0 +1,155 @@
+/**
+ * Header
+ */
+
+.header {
+  box-shadow: 0px 2px 10px 5px rgb(0,0,0);
+  font-size: 20px;
+  min-height: 50px;
+  justify-content: flex-start;
+  padding: 16px 16px 0 16px;
+  position: fixed;
+  transition: transform 0.233s cubic-bezier(0, 0, 0.21, 1) 0.1s;
+  width: 100%;
+  will-change: transform;
+  z-index: 1000;
+  margin: 0;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+body {
+  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  margin: 0;
+}
+
+canvas {
+  border-width: 1px;
+  border-style: solid;
+}
+
+p {
+  margin: 0.2em;
+}
+
+span.remix {
+  float: right;
+}
+
+button {
+  font-size: 0.9em;
+  margin: 5px 10px;
+}
+
+.serial-input {
+  display: flex;
+}
+
+.serial-input input{
+  flex-grow: 1;
+}
+
+.serial-input input:disabled {
+  border-width: 1px;
+  border-style: solid;
+}
+
+.main {
+  flex: 1;
+  padding-top: 80px;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.main > *{
+  margin: 10px auto;
+}
+
+.hidden {
+  display: none;
+}
+
+.controls span {
+  margin-left: 8px;
+}
+
+.chart-container {
+  position: relative;
+  height: 40vh;
+  margin: 10px auto;
+}
+
+.notSupported {
+  padding: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.container {
+  width: 100%;
+  height: clamp(10vh,40vh,80vh);
+  resize: vertical;
+  border-width: 1px;
+  border-style: solid;
+  overflow-y: scroll;
+}
+
+#log-container{
+  /* resize: none;
+  height: 40vh; */
+  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+  font-size: 0.8em;
+}
+
+.animation-container{
+  overflow: hidden;
+  transition : color 0.1s linear;
+}
+
+.show-calibration .log {
+  width: 70vw ;
+}
+
+.calibration-container {
+  display: none;
+  position: relative;
+  width: calc(30vw - 10px);
+  height: calc(50vh - 120px);
+  margin-left: 10px;
+  border-width: 1px;
+  border-style: solid;
+  align-items: center;
+  justify-content: center;
+}
+
+.show-calibration .calibration-container {
+  display: grid;
+}
+
+
+/* INFO */
+#head {
+  height: 2.7em;
+  font: 1.5em Arial;
+  display: flex;
+  justify-content: center;
+}
+
+.key {
+  text-align: right;
+  padding-right: 0.4em
+}
+
+/* CARTE */
+#map {
+  min-height: 10vh;
+  height: 80vh;
+  max-height: 80vh;
+}
+
+.GPSmarker{
+  filter: hue-rotate(120deg);
+}

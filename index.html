@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>WebSerial Control Panel</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- imports -->
+  <script type="importmap">
+    {
+        "imports": {
+            "three": "https://threejs.org/build/three.module.js",
+            "webglcheck": "https://threejs.org/three/addons/capabilities/WebGL.js",
+            "stlloader": "https://threejs.org/examples/jsm/loaders/STLLoader.js"
+        }
+    }
+  </script>
+
+  <!-- page stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/light.css" id="lightSS" class="theme" disabled>
+  <link rel="stylesheet" href="css/dark.css"  id="darkSS"  class="theme" disabled>
+  
+  <!-- page javascript -->
+  <script>var $ = function (id) { return document.getElementById(id); };</script>
+  <script src="js/script.js" defer></script>
+  <script type="module" src="js/rocket.js"></script>
+  <script src="js/webserial.js"></script>
+  <script src="js/settings.js"></script>
+
+  <!-- CARTE -->
+  <link rel="stylesheet" href="leaflet/leaflet.css"/>
+  <script src="leaflet/leaflet.js"></script>
+  <script src="js/carte.js"></script>
+</head>
+
+
+<body>
+  <header class="header">
+    <h1>WebSerial Control Panel</h1>
+  </header>
+
+  <main class="main">
+    <div id="webSerialnotSupported" class="notSupported">
+      Sorry, <b>Web Serial</b> is not supported on this device, make sure you're
+      running Chrome 78 or later and have enabled the
+      <code>#enable-experimental-web-platform-features</code> flag in
+      <code>chrome://flags</code>
+    </div>
+    <div id="webGLnotSupported" class="notSupported">
+      Sorry, <b>WebGL</b> is not supported on this device.
+    </div>
+
+    <div class="controls">
+      <button onclick="clickConnect()" id="butConnect">Connect</button>
+      <select onchange="changeSetting(this.id, 'value')" id="baudRate"></select>
+      <span>
+        <select onchange="changeSetting(this.id, 'value')" id="angleType">
+          <option value="quaternion">Quaternions</option>
+          <option value="euler">Euler Angles</option>
+        </select>
+      </span>
+      <input type="checkbox" onclick="changeSetting(this.id)" id="useGPS"> Use GPS
+      <input type="checkbox" onclick="changeSetting(this.id);updateTheme();" id="darkmode"> Dark Mode
+    </div>
+
+    <div class="animation-container container">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="serial-input">
+      <input id="serCommand" type="text" disabled />
+      <button onclick="clickSend()" id="butSend" disabled>Send</button>
+    </div>
+
+    <div id="log-container" class="row container">
+      <div id="log" class="log"></div>
+      <div id="calibration" class="calibration-container"></div>
+    </div>
+
+    <div class="controls">
+      <input type="checkbox" onclick="changeSetting(this.id)" id="autoscroll"> Autoscroll
+      <input type="checkbox" onclick="changeSetting(this.id)" id="showTimestamp"> Show Timestamp
+      <button onclick="resetLog()" id="butClear">Clear</button>
+    </div>
+
+    <div id="head">
+      <table id="LORAdata">
+        <tr>
+          <td class="key">Battery:</td>
+          <td id="battery">---</td>
+          <td class="key" style="padding-left:1em">Signal:</td>
+          <td id="stre">---</td>
+        </tr>
+        <tr>
+          <td class="key">Last lock:</td>
+          <td id="time">---</td>
+          <td class="key">RSSI:</td>
+          <td id="rssi">---</td>
+        </tr>
+      </table>
+      <div style="margin:2em"></div>
+      <table id="GPSdata">
+        <tr>
+          <td class="key">Fix:</td>
+          <td id="fix">---</td>
+          <td class="key" style="padding-left:1em">GPS time:</td>
+          <td id="GPStime">---</td>
+        </tr>
+        <tr>
+          <td class="key">Fix quality:</td>
+          <td id="qual">---</td>
+          <td class="key">GPS date:</td>
+          <td id="GPSdate">---</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+    <div id="head" style="height:1em">
+      <table>
+        <tr>
+          <td class="key">Latitude:</td>
+          <td id="lat">---</td>
+          <td class="key" style="padding-left:1em">Longitude:</td>
+          <td id="lng">---</td>
+        </tr>
+      </table>
+    </div>
+
+    <button id="butInitMap" onclick="initMap()">Initialise Map</button>
+    <div>
+      <input type="checkbox" onclick="changeSetting(this.id)" id="autoCenter"> Center automatically
+      <div>
+        <input type="radio" id="centerGPS" name="center" checked/>
+        <label for="centerGPS">Center on GPS</label>
+      </div>
+      <div>
+        <input type="radio" id="centerSelf" name="center"/>
+        <label for="centerSelf">Center on self</label>
+      </div>
+    </div>
+    <div id="map" class="container"></div>
+  </main>
+</body>
+</html>
