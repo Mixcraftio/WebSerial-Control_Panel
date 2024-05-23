@@ -8,13 +8,15 @@ function saveSetting(setting, value) {
 function loadAllSettings() {
   // Load all saved settings or defaults
   initBaudRate();
-  baudRate.value = loadSetting('baudRate', 9600);
-  angleType.value = loadSetting('angleType', 'quaternion');
-  darkmode.checked = loadSetting('darkmode', true);
-  useGPS.checked = loadSetting('useGPS', true);
-  autoscroll.checked = loadSetting('autoscroll', true);
-  showTimestamp.checked = loadSetting('showTimestamp', false);
-  autoCenter.checked = loadSetting('autoCenter', true);
+  $('baudRate').value = loadSetting('baudRate', 115200);
+  $('angleType').value = loadSetting('angleType', 'euler');
+  $('useGPS').checked = loadSetting('useGPS', true);
+  $('darkmode').checked = loadSetting('darkmode', true);
+  $('useLog').checked = loadSetting('useLog', false);
+  $('log-container').hidden = !$('useLog').checked;
+  $('autoscroll').checked = loadSetting('autoscroll', true);
+  $('showTimestamp').checked = loadSetting('showTimestamp', true);
+  $('autoCenter').checked = loadSetting('autoCenter', true);
   updateTheme();
 }
 

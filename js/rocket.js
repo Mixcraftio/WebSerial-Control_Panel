@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import {STLLoader} from 'stlloader';
 
-let orientation = [0, 0, -90];
+let euler = [0, 0, -90];
 let quaternion = [0, 0, 0, 0];
 
 const canvas = document.querySelector('#canvas');
@@ -106,24 +106,13 @@ async function render() {
 
   if (rocket != undefined) {
     if (angleType.value == "euler") {
-      if (showCalibration) {
-          // BNO055
-        let rotationEuler = new THREE.Euler(
-          THREE.MathUtils.degToRad(360 - orientation[2]),
-          THREE.MathUtils.degToRad(orientation[0]),
-          THREE.MathUtils.degToRad(orientation[1]),
-          'YZX'
-        );
-        rocket.setRotationFromEuler(rotationEuler);
-      } else {
-        let rotationEuler = new THREE.Euler(
-          THREE.MathUtils.degToRad(orientation[2]),
-          THREE.MathUtils.degToRad(orientation[0]-180),
-          THREE.MathUtils.degToRad(-orientation[1]),
-          'YZX'
-        );
-        rocket.setRotationFromEuler(rotationEuler);
-      }
+      let rotationEuler = new THREE.Euler(
+        THREE.MathUtils.degToRad(euler[2]),
+        THREE.MathUtils.degToRad(euler[0]-180),
+        THREE.MathUtils.degToRad(-euler[1]),
+        'YZX'
+      );
+      rocket.setRotationFromEuler(rotationEuler);
     } else {
       let rotationQuaternion = new THREE.Quaternion(quaternion[1], quaternion[3], -quaternion[2], quaternion[0]);
       rocket.setRotationFromQuaternion(rotationQuaternion);
@@ -131,7 +120,6 @@ async function render() {
   }
 
   renderer.render(scene, camera);
-  updateCalibration();
   await sleep(10); // Allow 10ms for UI updates
   await finishDrawing();
   await render();

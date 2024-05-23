@@ -1,17 +1,17 @@
 
-// Carte
-
 var map;
+
+// CARTE
 
 function initMap() {
   $('butInitMap').remove()
 
-  var googleSat = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+  var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
     maxZoom: 20,
     subdomains:['mt0','mt1','mt2','mt3']
   });
 
-  var googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+  var googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
     maxZoom: 20,
     subdomains:['mt0','mt1','mt2','mt3']
   });
@@ -75,49 +75,23 @@ function errorUpdatingPosition(err) {
 function onConnect_map() {
   if (!map && useGPS.checked) {
     initMap();
-  } else {
-    map.eachLayer(function(layer){
-      console.log(layer);
-    });
   }
 }
 
-function updateFeather(row) {
-  // fix;quality;time;date;locationlat;locationlng;speed;angle;altitude;satellites
+function GPSUpdate(row) {
+  // "GPS";fix;quality;time;date;locationlat;locationlng;speed;angle;altitude;satellites
   let res = row.split(";");
-  console.log(res);
-  if (res[0]) {
-    updateGPS(res);
+  if (res[0] == 'GPS') {
+    res.shift();
+    if (res[0]) {updateMap(res);}
   }
 }
 
-// function ConvertDMSToDD(degrees, minutes) {
-//   var dd = parseInt(degrees) + parseFloat("0."+minutes)/60
-//   //  + seconds/(60*60);
-
-//   // if (direction == "S" || direction == "W") {
-//   //     dd = dd * -1;
-//   // } // Don't do anything for N or E
-//   return dd;
-// }
-
-function updateGPS(data) {
-  // $("battery").innerHTML = data[0] + "%";
-  // $("time").innerHTML = data[1] + "s";
-  // $("stre").innerHTML = data[2];
-  // $("rssi").innerHTML = data[3];
-
+function updateMap(data) {
   $("fix").innerHTML = data[0];
   $("qual").innerHTML = data[1];
   $("GPStime").innerHTML = data[2];
   $("GPSdate").innerHTML = data[3];
-
-  // var latParts = data[4].split(/[^\d\w]+/)
-  // console.log(latParts)
-  // const lat = ConvertDMSToDD(latParts[0], latParts[1]);
-  // console.log(lat)
-  // var lngParts = data[5].split(/[^\d\w]+/)
-  // const lng = ConvertDMSToDD(lngParts[0], lngParts[1]);
 
   const lat = data[4];
   const lng = data[5];
@@ -130,7 +104,7 @@ function updateGPS(data) {
     var marker = L.marker(point).addTo(map);
     marker.bindPopup("GPS location at " + lat + lng);
     marker._icon.classList.add("GPSmarker");
-    console.log("[arduino] Position Updated")
+    console.log("[map] Arduino GPS position updated")
 
     if ($('centerGPS').checked && autoCenter.checked) {
       map.flyTo(point);

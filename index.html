@@ -25,10 +25,10 @@
   
   <!-- page javascript -->
   <script>var $ = function (id) { return document.getElementById(id); };</script>
+  <script type="module" src="js/rocket.js" defer></script>
+  <script src="js/webserial.js" defer></script>
+  <script src="js/settings.js" defer></script>
   <script src="js/script.js" defer></script>
-  <script type="module" src="js/rocket.js"></script>
-  <script src="js/webserial.js"></script>
-  <script src="js/settings.js"></script>
 
   <!-- CARTE -->
   <link rel="stylesheet" href="leaflet/leaflet.css"/>
@@ -64,6 +64,7 @@
       </span>
       <input type="checkbox" onclick="changeSetting(this.id)" id="useGPS"> Use GPS
       <input type="checkbox" onclick="changeSetting(this.id);updateTheme();" id="darkmode"> Dark Mode
+      <input type="checkbox" onclick="changeSetting(this.id);$('log-container').hidden = !$('log-container').hidden;" id="useLog"> Log
     </div>
 
     <div class="animation-container container">
@@ -77,13 +78,13 @@
 
     <div id="log-container" class="row container">
       <div id="log" class="log"></div>
-      <div id="calibration" class="calibration-container"></div>
     </div>
 
     <div class="controls">
       <input type="checkbox" onclick="changeSetting(this.id)" id="autoscroll"> Autoscroll
       <input type="checkbox" onclick="changeSetting(this.id)" id="showTimestamp"> Show Timestamp
       <button onclick="resetLog()" id="butClear">Clear</button>
+      <button onclick="exportData()" id="butExport" style="float:right">Export</button>
     </div>
 
     <div id="head">
