@@ -6,16 +6,15 @@
   <title>WebSerial Control Panel</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <!-- imports -->
   <script type="importmap">
-    {
-        "imports": {
-            "three": "https://threejs.org/build/three.module.js",
-            "webglcheck": "https://threejs.org/three/addons/capabilities/WebGL.js",
-            "stlloader": "https://threejs.org/examples/jsm/loaders/STLLoader.js"
-        }
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
     }
+  }
   </script>
 
   <!-- page stylesheet -->
@@ -38,8 +37,8 @@
 
 
 <body>
-  <header class="header">
-    <h1>WebSerial Control Panel</h1>
+  <header id="header">
+    <span>WebSerial Control Panel</span>
   </header>
 
   <main class="main">
@@ -67,25 +66,27 @@
       <input type="checkbox" onclick="changeSetting(this.id);$('log-container').hidden = !$('log-container').hidden;" id="useLog"> Log
     </div>
 
-    <div class="animation-container container">
-      <canvas id="canvas"></canvas>
+    <div class="view">
+      <div class="animation-container container">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div class="serial">
+        <div class="serial-input">
+          <input id="serCommand" type="text" disabled />
+          <button onclick="clickSend()" id="butSend" disabled>Send</button>
+        </div>
+        <div id="log-container" class="row container">
+          <div id="log" class="log"></div>
+        </div>
+        <div class="controls">
+          <input type="checkbox" onclick="changeSetting(this.id)" id="autoscroll"> Autoscroll
+          <input type="checkbox" onclick="changeSetting(this.id)" id="showTimestamp"> Show Timestamp
+          <button onclick="resetLog()" id="butClear">Clear</button>
+          <button onclick="exportData()" id="butExport" style="float:right">Export</button>
+        </div>
+      </div>
     </div>
 
-    <div class="serial-input">
-      <input id="serCommand" type="text" disabled />
-      <button onclick="clickSend()" id="butSend" disabled>Send</button>
-    </div>
-
-    <div id="log-container" class="row container">
-      <div id="log" class="log"></div>
-    </div>
-
-    <div class="controls">
-      <input type="checkbox" onclick="changeSetting(this.id)" id="autoscroll"> Autoscroll
-      <input type="checkbox" onclick="changeSetting(this.id)" id="showTimestamp"> Show Timestamp
-      <button onclick="resetLog()" id="butClear">Clear</button>
-      <button onclick="exportData()" id="butExport" style="float:right">Export</button>
-    </div>
 
     <div id="head">
       <table id="LORAdata">

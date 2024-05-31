@@ -1,4 +1,4 @@
-.header {
+#header {
   box-shadow: 0px 2px 10px 5px #14539a;
   background: #14539a;
   color: white;
@@ -20,13 +20,13 @@ input, select, button {
 }
 
 .serial-input input {
-  background-color: #184375;
   border-color: #666;
 }
 
 .serial-input input:disabled,
 .serial-input button:disabled {
   border-color: #214a7a;
+  background-color: #0d3562;
   color: #666;
 }
 

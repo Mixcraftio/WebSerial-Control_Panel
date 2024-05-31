@@ -1,13 +1,10 @@
 
 import * as THREE from 'three';
-import {STLLoader} from 'stlloader';
-
-let euler = [0, 0, -90];
-let quaternion = [0, 0, 0, 0];
+import WebGL from 'three/addons/capabilities/WebGL.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 
 const canvas = document.querySelector('#canvas');
-
-fitToContainer(canvas);
 
 function fitToContainer(canvas){
   // Make it visually fill the positioned parent
@@ -17,24 +14,6 @@ function fitToContainer(canvas){
   canvas.width  = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
-  if (checkWebGL()) {
-    webGLnotSupported.classList.add('hidden');
-  }
-  await finishDrawing();
-  await render();
-})
-
-function checkWebGL() { 
-  try {
-   var canvas = document.createElement('canvas'); 
-   return !!window.WebGLRenderingContext &&
-     (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
-  } catch(e) {
-    return false;
-  }
-};
 
 // THREE utils
 
@@ -46,18 +25,22 @@ async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// THREE
+// THREE (dimension en x10-2)
 
 let rocket;
 
 const renderer = new THREE.WebGLRenderer({canvas});
 
-const camera = new THREE.PerspectiveCamera(45, canvas.width/canvas.height, 0.1, 100);
-camera.position.set(0, 10, 30);
+const camera = new THREE.PerspectiveCamera(50, canvas.width/canvas.height, 0.1, 100);
+camera.position.set(20, 30, 20);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('black');
-scene.add(new THREE.AxesHelper(5))
+scene.add(new THREE.AxesHelper())
+
+const controls = new OrbitControls( camera, renderer.domElement );
+controls.update();
+
 {
   const skyColor = 0xB1E1FF;  // light blue
   const groundColor = 0x666666;  // black
@@ -69,18 +52,19 @@ scene.add(new THREE.AxesHelper(5))
 {
   const color = 0xFFFFFF;
   const intensity = 1;
-  const light = new THREE.DirectionalLight(color, intensity);
-  light.position.set(0, 10, 0);
-  light.target.position.set(-5, 0, 0);
-  scene.add(light);
-  scene.add(light.target);
+  const light2 = new THREE.DirectionalLight(color, intensity);
+  light2.position.set(0, 10, 0);
+  light2.target.position.set(-5, 0, 0);
+  scene.add(light2);
+  scene.add(light2.target);
 }
 
 {
   const stlLoader = new STLLoader();
-  stlLoader.load('assets/rocket.stl', (root) => {
-    rocket = new THREE.Mesh(root)
-    rocket.scale.set(0.01,0.01,0.01)
+  stlLoader.load('assets/rocket.stl', (geometry) => {
+    const material = new THREE.MeshPhongMaterial({ color: 0xaaaaaa, specular: 0x111111, shininess: 200 })
+    rocket = new THREE.Mesh(geometry, material)
+    rocket.scale.set(0.01,0.01,0.01) // de m a cm
     scene.add(rocket);
   });
 }
@@ -105,13 +89,14 @@ async function render() {
   }
 
   if (rocket != undefined) {
-    if (angleType.value == "euler") {
+    if (angleType.value == 'euler') {
       let rotationEuler = new THREE.Euler(
-        THREE.MathUtils.degToRad(euler[2]),
-        THREE.MathUtils.degToRad(euler[0]-180),
-        THREE.MathUtils.degToRad(-euler[1]),
-        'YZX'
+        THREE.MathUtils.degToRad(euler[0]+eulerOffset[0]),
+        THREE.MathUtils.degToRad(euler[1]+eulerOffset[1]),
+        THREE.MathUtils.degToRad(euler[2]+eulerOffset[2]),
+        'XYZ'
       );
+      // console.log(rotationEuler)
       rocket.setRotationFromEuler(rotationEuler);
     } else {
       let rotationQuaternion = new THREE.Quaternion(quaternion[1], quaternion[3], -quaternion[2], quaternion[0]);
@@ -119,8 +104,19 @@ async function render() {
     }
   }
 
+  controls.update();
+
   renderer.render(scene, camera);
   await sleep(10); // Allow 10ms for UI updates
+  await finishDrawing();
+  await render();
+}
+
+// CODE
+
+fitToContainer(canvas);
+if ( WebGL.isWebGLAvailable() ) {
+  webGLnotSupported.classList.add('hidden');
   await finishDrawing();
   await render();
 }

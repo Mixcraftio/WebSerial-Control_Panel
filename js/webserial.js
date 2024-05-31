@@ -51,7 +51,7 @@ class LineBreakTransformer {
 function toggleUIConnect(connected) {
   let lbl = 'Connect';
   if (connected) {
-      lbl = 'Disconnect';
+    lbl = 'Disconnect';
   }
   serCommand.disabled = !connected
   butSend.disabled = !connected
@@ -70,16 +70,17 @@ async function connect() {
     // - Wait for the port to open.
     await port.open({ baudRate: parseInt(baudRate.value, 10) });
     port.addEventListener("disconnect", (event) => {
-      console.log(event);
+      if (debug){console.log(event)}
       disconnect();
     });
 
+    toggleUIConnect(true);
     onConnect_map();
 
     const decoder = new TextDecoderStream();
     inputDone = port.readable.pipeTo(decoder.writable);
     inputStream = decoder.readable.pipeThrough(new TransformStream(new LineBreakTransformer()));
-
+  
     reader = inputStream.getReader();
     readLoop(reader).catch(async function(error) {
       console.error(error)
@@ -120,6 +121,10 @@ async function disconnect() {
  * Reads data from the input stream and displays it on screen.
  */
 async function readLoop() {
+  var ex = 0;
+  var ey = 0;
+  var ez = 0;
+  var time = 0;
   while (true) {
     const {value, done} = await reader.read();
     if (value) {
@@ -129,15 +134,23 @@ async function readLoop() {
       // $("stre").innerHTML = data[2];
       // $("rssi").innerHTML = data[3];
 
-      // "IMU";temp;ax;ay;az;gx;gy;gz
+      // "IMU";time;temp;ax;ay;az;gx;gy;gz
+      if(res[0] == 'IMU' && time == 0){time=res[1]}
       if (res[0] == 'IMU') {
         res.shift();
-        euler=[res[4],res[5],res[6]]
-        console.log('[IMU] Orientation updated');
+        newTime=res[0]
+        // h=(newTime-time)*(1/6660)
+        h=1
+        ex += parseFloat(res[5])*h;
+        ey += parseFloat(res[6])*h;
+        ez += parseFloat(res[7])*h;
+        euler=[ex,ey,ez]
+        time=newTime
+        if (debug){console.log('[IMU] Orientation updated');}
       }
     }
     if (done) {
-      console.log('[readLoop] DONE', done);
+      if (debug){console.log('[readLoop] DONE', done);}
       reader.releaseLock();
       break;
     }
@@ -203,17 +216,21 @@ function resetLog() {
  * Click handler for the connect/disconnect button.
  */
 async function clickConnect() {
-  console.log(port)
-  if (port) {
+  if (debug){console.log("port :", port)}
+  try {
+    if (port) {
     await disconnect(); //problemeatic if unplugged
     toggleUIConnect(false);
     return;
+    }
+  } catch (error) {
+    port = null;
+    clickConnect();
   }
 
   await connect();
   resetLog();
   logged = [];
-  toggleUIConnect(true);
 }
 
 /**

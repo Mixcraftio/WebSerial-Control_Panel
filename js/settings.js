@@ -23,20 +23,20 @@ function loadAllSettings() {
 function loadSetting(setting, defaultValue) {
   let cookieSetting = window.localStorage.getItem(setting);
   if (cookieSetting == null || cookieSetting == "undefined") {
-    console.log("[settings] Loaded " + setting + " with default value (" + defaultValue + ")")
+    if (debug){console.log("[settings] Loaded " + setting + " with default value (" + defaultValue + ")")}
     return defaultValue;
   }
-  console.log("[settings] Loaded " + setting + " with value : " + cookieSetting)
+  if (debug){console.log("[settings] Loaded " + setting + " with value : " + cookieSetting)}
   return JSON.parse(cookieSetting);
 }
 
 async function changeSetting(id, type="check") {
   if (type == "value") {
     saveSetting(id, $(id).value);
-    console.log("[settings] Saved " + id + " as " + $(id).value)
+    if (debug){console.log("[settings] Saved " + id + " as " + $(id).value)}
   } else {
     saveSetting(id, $(id).checked);
-    console.log("[settings] Saved " + id + " as " + $(id).checked)
+    if (debug){console.log("[settings] Saved " + id + " as " + $(id).checked)}
   }
 }
 

@@ -37,7 +37,7 @@ function initMap() {
 
   navigator.geolocation.watchPosition(updatePosition, errorUpdatingPosition)
 
-  console.log("[map] Map initialised")
+  if (debug){console.log("[map] Map initialised")}
 }
 
 
@@ -79,7 +79,7 @@ function onConnect_map() {
 }
 
 function GPSUpdate(row) {
-  // "GPS";fix;quality;time;date;locationlat;locationlng;speed;angle;altitude;satellites
+  // "GPS";arduinotime;fix;quality;time;date;locationlat;locationlng;speed;angle;altitude;satellites
   let res = row.split(";");
   if (res[0] == 'GPS') {
     res.shift();
@@ -88,13 +88,13 @@ function GPSUpdate(row) {
 }
 
 function updateMap(data) {
-  $("fix").innerHTML = data[0];
-  $("qual").innerHTML = data[1];
-  $("GPStime").innerHTML = data[2];
-  $("GPSdate").innerHTML = data[3];
+  $("fix").innerHTML = data[1];
+  $("qual").innerHTML = data[2];
+  $("GPStime").innerHTML = data[3];
+  $("GPSdate").innerHTML = data[4];
 
-  const lat = data[4];
-  const lng = data[5];
+  const lat = data[5];
+  const lng = data[6];
 
   $("lat").innerHTML = lat;
   $("lng").innerHTML = lng;
@@ -104,10 +104,10 @@ function updateMap(data) {
     var marker = L.marker(point).addTo(map);
     marker.bindPopup("GPS location at " + lat + lng);
     marker._icon.classList.add("GPSmarker");
-    console.log("[map] Arduino GPS position updated")
+    if (debug){console.log("[map] Arduino GPS position updated")}
 
     if ($('centerGPS').checked && autoCenter.checked) {
-      map.flyTo(point);
+      map.panTo(point);
     }
   }
 }
