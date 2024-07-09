@@ -79,22 +79,26 @@ function onConnect_map() {
 }
 
 function GPSUpdate(row) {
-  // "GPS";arduinotime;fix;quality;time;date;locationlat;locationlng;speed;angle;altitude;satellites
+  // "GPS";fix;quality;time;date;locationlat;locationlng;speed;angle;altitude;satellites
   let res = row.split(";");
   if (res[0] == 'GPS') {
     res.shift();
-    if (res[0]) {updateMap(res);}
+    try {
+      updateMap(res);
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
 function updateMap(data) {
-  $("fix").innerHTML = data[1];
-  $("qual").innerHTML = data[2];
-  $("GPStime").innerHTML = data[3];
-  $("GPSdate").innerHTML = data[4];
+  // $("fix").innerHTML = data[0];
+  // $("qual").innerHTML = data[1];
+  $("GPStime").innerHTML = data[2];
+  $("GPSdate").innerHTML = data[3];
 
-  const lat = data[5];
-  const lng = data[6];
+  const lat = data[4];
+  const lng = data[5];
 
   $("lat").innerHTML = lat;
   $("lng").innerHTML = lng;

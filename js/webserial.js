@@ -129,10 +129,15 @@ async function readLoop() {
     const {value, done} = await reader.read();
     if (value) {
       let res = value.split(";");
-      // $("battery").innerHTML = data[0] + "%";
-      // $("time").innerHTML = data[1] + "s";
-      // $("stre").innerHTML = data[2];
-      // $("rssi").innerHTML = data[3];
+      
+      if(res[0] == 'INFO') {
+        res.shift();
+        // $("battery").innerHTML = res[0] + "%";
+        // $("time").innerHTML = res[1] + "s";
+        $("rssi").innerHTML = res[0] + " dBm";
+        $("snr").innerHTML = res[1];
+        $("freqErr").innerHTML = res[2] + "Hz";
+      }
 
       // "IMU";time;temp;ax;ay;az;gx;gy;gz
       if(res[0] == 'IMU' && time == 0){time=res[1]}
